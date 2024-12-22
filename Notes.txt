@@ -1,0 +1,385 @@
+V-DOM : Virtual DOM : reconcilation : react fibre
+on every data change => a clone of existing JS DOM (3li) is created with updated dataset (5li)
+=> a comparison between the JS DOM & the clone is performed
+=> effectively determine only the changes (2li)
+=> the changes are patched to the DOM
+
+Tools
+
+1. VS code
+2. NODE JS (min v18)
+3. Chrome/firefox
+4. CRA : create react app cli
+5. React devtools
+
+npm install -g yarn
+yarn create react-app my-app --template=typescript
+cd my-app
+npm start
+
+Components
+
+- naming convention : PascalCase
+- name of component & filename should be same
+- one component definition per file
+
+src
+Demo.tsx
+
+VS Code
+
+- error lens
+- prettier
+- path intellisense
+- paste json as code
+- auto rename tag
+
+designing components
+
+1. smallest reusable entity
+2. SRP : single responsibility principle
+
+DESIGN PATTERN : SMART-DUMB
+SMART : logical
+DUMB : presentation
+
+SMART : fetches the data from the server & passes it on to the DUMB
+DUMB : receives the data & displays it
+
+src
+containers
+ProductList.tsx
+components
+Product.tsx
+services
+ProductService.ts
+types.ts
+
+Product
+
+- display the data
+
+- fetch the data
+- add to cart
+- navigation
+- wishlist
+
+Page 1
+Product : add to cart
+
+Page 2
+Product : add to cart & navigate
+
+Page 3
+Product : add to cart/wishlist
+
+App
+ProductList : SMART : plist
+Product : DUMB : data
+
+Component Communication : PARENT <=> CHILD
+PARENT TO CHILD : props (properties) : value/data
+CHILD TO PARENT : props (events) : function
+<img src="data.jpg" onclick="func()" />
+
+conditional rendering
+
+- ternary operator
+- function
+- component
+
+lists
+A 1 A : 1
+B 2 D : 4
+C 3 B : 2
+C : 3
+
+     bit.ly/2Ee7HOL
+
+AJAX
+
+- js : fetch
+- 3rd party library : jQuery, axios
+
+yarn add axios
+
+Components
+
+- props : data exchange
+- state : ui updates
+  - state should always be initialized
+  - state should always be updated immutably
+
+stateful : class
+stateless : function
+
+class Cmp inherits Component{}
+Cmp : 10kb
+Component : 100kb
+110kb
+
+functional : 10kb
+16.8 : React hooks
+allows us to hook a functionality which in general is available in class components to a functional component
+
+Lifecycle Phases : useEffect
+
+- mounting
+- updating
+- unmounting
+
+custom hooks : reusable logic
+components : reusable elements
+
+hooks
+useEffect
+useState
+
+FORMS
+controlled : state => V-DOM
+uncontrolled : ref => V-DOM => JS DOM => document.getElementById
+
+Wrapper : UI
+<tag />
+<tag>content</tag>
+
+<h1>content</h1>
+<p>content</p>
+
+ATOMIC
+atoms => molecules => organisms => templates => page
+feature
+atoms - button - icon - image - typography
+
+    molecules
+    - buttonwithicon
+    - imagewithfallback
+
+    organisms
+    - product : buttonwithicon, imagewithfallback, typography
+
+    template
+    - productlist
+
+    page
+    - productlist
+    - filter
+
+    components
+    - Card.tsx
+
+
+    Passing data
+    - props : PARENT-CHILD
+    - context api : v16
+    - redux : global state management (session management)
+
+Context API
+
+- provider : single
+- consumer : multiple
+
+only the descendants of the provider can be a consumer
+
+App : provider
+ThemeSwitch : data
+ProductList
+Product
+Card : data (consumer)
+
+<CartContext.Provider>
+<UserContext.Provider>
+<ThemeContext.Provider>
+</ThemeContext.Provider>
+</UserContext.Provider>
+</CartContext.Provider>
+
+memoization : only when the props of the component are changing, component will rerender
+
+request : useRef, react-query
+forms : formik
+data
+
+- smaller dataset : map
+- larger dataset :
+  - pagination (client side, server side)
+  - infinite scrolling
+  - virtual scrolling
+
+React Router : SPA : yarn add react-router-dom
+- defining the routes
+- navigation : Link, useNavigate
+- Private/protected route 
+- passing params : url/route params
+    - path params : required
+    - query params : optional
+
+state management
+- shorter : url params
+- longer : browser storages
+
+Lazy & Suspense : code splitting : on-demand loading (lazy loading)
+
+FLUX & REDUX
+FLUX : concept : uni-directional data flow
+REDUX : library : JS state management
+
+store : data repository
+tv : data
+person : component
+
+state : local scope
+context : provider scope
+redux : global scope
+
+REDUX STEPS
+- create actions :
+  actions are functions related to data changes to be done inside the store
+
+- create reducer :
+  reducers are functions which analyse the type of action & return the udpated data to the store
+
+- create store : once/app
+  store is created by combining the data returned from the reducers
+
+- provide the store to entire application
+
+- connecting the components to the store
+
+yarn add react-redux @reduxjs/toolkit
+
+src
+    store
+      slices
+        currencySlice.ts
+      index.ts : store config file
+
+REDUX FLOW
+on every action dispatched => all are the reducers are invoked
+                            => reducers will try to find the action matching the action dispatched
+                              => once the matching action is found, the corresponding logic is executed
+                                => logic will return the immutable data to the store
+                                  => store will publish a notification to all the connected components (useSelector)
+                                    => useSelector will execute the inner logic again
+                                      => if the data is changed, component will re-render
+                                      
+useSelector : used to read data from the store
+useDispatch : used to make data changes inside the store
+
+yarn add formik yup
+yarn add redux-persist
+
+Error boundaries : yarn add react-error-boundary
+used for handling production render errors
+A
+  B
+  ----------Boundary------------
+    C
+      D : render fails
+  ----------Boundary--------------
+    E
+      F
+
+MFE : micro front-ends
+
+apps
+    product
+      components
+      containers (templates)
+      pages
+      services
+      hooks
+
+    cart
+      components
+      containers (templates)
+      pages
+      services
+      hooks
+
+    ui
+      components
+
+    orders
+      components
+      containers (templates)
+      pages
+      services
+      hooks
+
+    store
+      slices
+      store-config
+
+    utils
+
+localhost:3000 : module federation
+    main-app.js
+
+    product.js : 3001
+    cart.js : 3002
+    orders.js : 3003
+
+    <my-product data="" event=""></my-product>
+
+    <my-cart></my-cart>
+
+    host
+    remote (features)
+    sharedResources
+
+    mono-repos : nx & lerna
+
+    workspace : application
+      apps
+      libs
+
+
+
+npx create-nx-workspace@latest shop-app --preset=apps
+cd shop-app
+npx nx add @nx/react
+npx nx g @nx/react:host apps/shell --remotes=product,checkout,cart
+
+npx nx graph
+npx nx serve shell --open
+npx nx serve shell --devRemotes=product
+
+Communication
+- platform agnostic approach : using CustomEvents api
+- event bus approach : publisher/subscriber (rxjs)
+- redux (platform dependent)
+
+npx nx g @nx/js:lib libs/event-bus
+npx nx g @nx/react:lib libs/ui
+
+npx nx run-many -t build
+npx nx release
+
+mkdir mfe-app
+cd mfe-app
+yarn create react-app host
+yarn create react-app remote
+
+create moduleFederation.config.js in host & remote
+rename index.js to bootstrap.js in host & remote
+create index.js in host & remote
+
+add below line in index.js in host & remote
+import('./bootstrap');
+
+cd host
+yarn add mf-cra
+
+cd remote
+yarn add mf-cra
+
+inside remote create .env file
+PORT=3001
+
+
+cd host
+npm start
+
+cd remote
+npm start
